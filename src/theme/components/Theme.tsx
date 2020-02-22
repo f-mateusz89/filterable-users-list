@@ -7,7 +7,7 @@ interface Props {
   children: React.ReactChildren | React.ReactChild;
 }
 
-function Theme({ children }: Props): JSX.Element {
+function Theme({ children }: Props): React.ReactElement {
   const theme = createMuiTheme({
     palette: {
       type: 'dark',
