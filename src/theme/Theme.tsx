@@ -8,7 +8,11 @@ interface Props {
 }
 
 function Theme({ children }: Props): JSX.Element {
-  const theme = createMuiTheme();
+  const theme = createMuiTheme({
+    palette: {
+      type: 'dark',
+    },
+  });
 
   return (
     <ThemeProvider theme={theme}>
