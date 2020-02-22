@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import axios from 'axios';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
+
+interface User {
+  id: number;
+  username: string;
+  name: string;
+}
+
+interface Response {
+  data: User[];
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,12 +28,16 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function UsersList(): JSX.Element {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([] as User[]);
+  const [filter, setFilter] = useState('');
   const classes = useStyles();
+  const onFilterChange = useCallback((event) => setFilter(event.target.value), [
+    setFilter,
+  ]);
 
   useEffect(() => {
     async function fetchUsers(): Promise<void> {
-      const { data } = await axios({
+      const { data }: Response = await axios({
         method: 'GET',
         url: 'https://jsonplaceholder.typicode.com/users',
       });
@@ -32,25 +46,32 @@ function UsersList(): JSX.Element {
     }
 
     fetchUsers();
-  }, []);
+  }, [setUsers]);
 
   return (
     <>
       <form className={classes.root} noValidate autoComplete="off">
-        <TextField label="Search by user name..." />
+        <TextField label="Search by user name..." onChange={onFilterChange} />
       </form>
 
       <List dense>
-        {users.map(
-          ({ id, name, username }, index): React.ReactElement => (
-            <ListItem key={id}>
-              <ListItemText
-                primary={`${index + 1}. ${name}`}
-                secondary={`@${username}`}
-              />
-            </ListItem>
-          ),
-        )}
+        {users
+          .filter(
+            ({ name, username }) =>
+              !filter ||
+              name.toLowerCase().includes(filter.toLowerCase()) ||
+              username.toLowerCase().includes(filter.toLowerCase()),
+          )
+          .map(
+            ({ id, name, username }, index): React.ReactElement => (
+              <ListItem key={id}>
+                <ListItemText
+                  primary={`${index + 1}. ${name}`}
+                  secondary={`@${username}`}
+                />
+              </ListItem>
+            ),
+          )}
       </List>
     </>
   );
