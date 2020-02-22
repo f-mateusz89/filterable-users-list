@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import axios from 'axios';
+import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -50,6 +51,10 @@ function UsersList(): JSX.Element {
 
   return (
     <>
+      <Box fontSize="h6.fontSize" m={1}>
+        Users List
+      </Box>
+
       <form className={classes.root} noValidate autoComplete="off">
         <TextField label="Search by user name..." onChange={onFilterChange} />
       </form>
